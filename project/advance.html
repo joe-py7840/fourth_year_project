@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f0f0f0;
+		}
+		h1 {
+			text-align: center;
+			margin-top: 20px;
+		}
+		p {
+			text-align: center;
+			margin-bottom: 20px;
+		}
+		#timer {
+			text-align: center;
+			font-size: 24px;
+			margin-bottom: 10px;
+		}
+		#score {
+			text-align: center;
+			font-size: 24px;
+			margin-bottom: 10px;
+		}
+		#item {
+			text-align: center;
+			font-size: 36px;
+			margin-bottom: 20px;
+		}
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 0 auto;
+			max-width: 400px;
+		}
+		input[type="text"] {
+			padding: 10px;
+			font-size: 18px;
+			margin-bottom: 10px;
+			border-radius: 5px;
+			border: none;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+			text-align: center;
+			width: 100%;
+			box-sizing: border-box;
+		}
+		button[type="submit"] {
+			padding: 10px;
+			font-size: 18px;
+			background-color: #2ecc71;
+			color: white;
+			border: none;
+			border-radius: 5px;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+		button[type="submit"]:hover {
+			background-color: #27ae60;
+		}
+	</style>
+	<title>Guess the Category</title>
+	<script type="text/javascript">
+		window.onload = function() {
+            const person = `{
+  name: 'John',
+  age: 30,
+  city: 'New York'
+            }
+`;
+
+
+			var items = [
+  { name: "int", category: "Data Type" },
+  { name: "country = 'Kenya'", category: "String" },
+  { name: "true", category: "Boolean" },
+  { name: "+", category: "Operator" },
+  { name: "my_nums=[1, 2, 3, 4, 5]", category: "List" },
+  { name: "my_nums= (1, 2, 3, 4, 5)", category: "Tuple" },
+  { name: "fruits= {'Apple', 'Mango', 'Orange'}", category: "Set" },
+  { name: person, category: "Dictionary" },
+  { name: JSON.stringify({name: "John", age: 30, city: "New York"}), category: "Object" }
+];
+			var score = 0;
+			var current = 0;
+			var currentCategory = "";
+			var maxItems = items.length;
+			var maxScore = maxItems * 10;
+			var timeLimit = 5;
+			var timer;
+			var timerDiv = document.getElementById("timer");
+			var scoreDiv = document.getElementById("score");
+			var itemDiv = document.getElementById("item");
+			var formDiv = document.getElementById("form");
+
+			function updateScore() {
+				scoreDiv.innerHTML = "Score: " + score + " / " + maxScore;
+			}
+
+			function updateItem() {
+				itemDiv.innerHTML = items[current].name;
+				currentCategory = items[current].category;
+			}
+
+			function nextItem() {
+				current++;
+				if (current >= maxItems) {
+					clearInterval(timer);
+					formDiv.innerHTML = "Game Over! Your final score is " + score + " / " + maxScore;
+				}
+				else {
+					updateItem();
+				}
+                document.getElementById("input").value = ""; //clear input after submission
+			}
+
+			function startTimer() {
+				var timeLeft = timeLimit;
+				timer = setInterval(function() {
+					if (timeLeft <= 0) {
+						nextItem();
+						timeLeft = timeLimit;
+					}
+					timerDiv.innerHTML = "Time Left: " + timeLeft;
+					timeLeft--;
+				}, 1000);
+			}
+
+			formDiv.addEventListener("submit", function(event) {
+				event.preventDefault();
+				var input = document.getElementById("input").value;
+				if (input.toLowerCase() == currentCategory.toLowerCase()) {
+					score += 10;
+				}
+				updateScore();
+				nextItem();
+			});
+
+			updateScore();
+			updateItem();
+			startTimer();
+		}
+	</script>
+</head>
+<body>
+	<h1>Guess the Category</h1>
+	<p>For each item, guess the category it belongs to. You have 30 seconds for each item.</p>
+	<div id="timer">Time Left: 30</div>
+	<div id="score">Score: 0 / 90</div>
+	<div id="item"></div>
+	<form id="form">
+		<input id="input" type="text" placeholder="Enter category here" required>
+		<button type="submit">Submit</button>
+	</form>
+</body>
+</html>
